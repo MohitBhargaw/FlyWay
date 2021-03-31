@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>No available flights</title>
+</head>
+<body align="center">
+<h2 style="color: red;"><u>The flight is either departed from desired location or flights are not available at this moment of time.</u></h2>
+<h3><a href="searchCredentials">Click here</a> to go back.</h3>
+</body>
+</html> 

@@ -1,0 +1,22 @@
+package org.simplilearn.workshop;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/logout")
+public class Logout extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+Cookie cookie=new Cookie("ID", ""); //creating cookie object
+cookie.setMaxAge(0);//set maximum age of cookie within seconds
+response.addCookie(cookie); //adding cookie in response
+	request.getRequestDispatcher("admin/Logout.html").forward(request, response);// pass data to requested website
+	}
+	   
+
+}

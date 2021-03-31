@@ -1,0 +1,64 @@
+package org.simplilearn.workshop;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.simplilearn.workshop.object.Locations;
+@WebServlet("/airlines")
+public class AirLines extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+List<Locations> locations=new ArrayList<Locations>();
+
+String sql="SELECT * FROM teksystem.masterlist;"; 
+
+try {  
+	// step 1:load a driver
+	Class.forName("com.mysql.cj.jdbc.Driver");
+
+	String url = "jdbc:mysql://localhost:3306/teksystem?useSSL=false";
+	String user = "root";
+	String pass = "UP85aw053@";
+
+	// step 2: obtain a connection
+	Connection connection = DriverManager.getConnection(url, user, pass);
+	System.out.println("got connection");
+
+	Statement s = connection.createStatement();
+	ResultSet rs = s.executeQuery(sql);
+	while (rs.next()) {
+	Locations location=new Locations(); //creating object     
+	location.setAirlines(rs.getString(6)); //Airlines and location are classes hence we are passing object from one class to another
+	locations.add(location);
+	}
+	rs.close(); //closing of connections  
+	s.close();
+	connection.close();
+}
+	catch(SQLException e) //exception catching
+	{
+		e.printStackTrace();
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+request.setAttribute("locations", locations);
+RequestDispatcher rd=request.getRequestDispatcher("admin/listAirlines.jsp");
+rd.forward(request, response);
+}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+	}

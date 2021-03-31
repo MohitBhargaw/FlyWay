@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Welcome</title>
+</head>
+<body align="center">
+
+	<h1><strong><u>Welcome to FlyAway (An Airline Booking Portal).<u></strong></h1>
+	<table align="center">
+		<th><h3><strong>Choose the appropriate option to continue:- </h3></strong></th>
+		
+		<th><a href="searchCredentials" ><div class="boxed">
+  User Login
+</div> </a></th>
+		<th>|</th>
+		<th><a href="admin" >Admin Login</a></th>
+	</table>
+	
+   
+</body>
+</html>

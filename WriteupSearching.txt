@@ -1,0 +1,134 @@
+package org.simplilearn.workshop;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.simplilearn.workshop.object.Locations;
+
+@WebServlet("/searchCredentials")
+public class Searching extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+List<Locations> locations=new ArrayList<Locations>();
+String sql="SELECT * FROM masterlist";   //masterlist is table name being created under teksystem schema in MySql Workbench 
+try {  
+	// step 1:load a driver
+	Class.forName("com.mysql.cj.jdbc.Driver");
+
+	String url = "jdbc:mysql://localhost:3306/teksystem?useSSL=false";
+	String user = "root";
+	String pass = "UP85aw053@";
+
+	// step 2: obtain a connection
+	Connection connection = DriverManager.getConnection(url, user, pass);
+	System.out.println("got connection");
+
+	Statement s = connection.createStatement();
+	ResultSet rs = s.executeQuery(sql);
+	
+	while (rs.next()) {  
+		Locations location=new Locations();  
+location.setSource(rs.getString(2));
+location.setDestination(rs.getString(3));
+locations.add(location);
+	}
+	rs.close();
+	s.close();
+	connection.close();
+	request.setAttribute("locations", locations);
+	RequestDispatcher rd=request.getRequestDispatcher("searchPage.jsp"); //pass data to requested website
+	rd.forward(request, response);
+}catch(SQLException e)
+{
+	e.printStackTrace();
+}catch(Exception e)
+{
+	e.printStackTrace();
+}
+	
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+String source=request.getParameter("source");
+String destination=request.getParameter("destination");
+String date=request.getParameter("date");
+int number=Integer.parseInt(request.getParameter("number"));
+
+List<Locations> locations=new ArrayList<Locations>();
+String sql="SELECT * FROM masterlist WHERE Source='"+source+"' AND Destination='"+ destination+"' " ;
+try {  
+	// step 1:load a driver
+	Class.forName("com.mysql.cj.jdbc.Driver");
+
+	String url = "jdbc:mysql://localhost:3306/teksystem?useSSL=false";
+	String user = "root";
+	String pass = "UP85aw053@";
+
+	// step 2: obtain a connection
+	Connection connection = DriverManager.getConnection(url, user, pass);
+	System.out.println("got connection");
+
+	Statement s = connection.createStatement();
+	ResultSet rs = s.executeQuery(sql);
+	boolean valid=false;
+	
+	while (rs.next()) {
+		valid=true;
+		Locations location= new Locations();  
+		location.setSource(rs.getString(2));
+location.setDestination(rs.getString(3));
+location.setRemaining(Integer.parseInt(rs.getString(4)));
+location.setAirlines(rs.getString(5));
+location.setPrice(Integer.parseInt(rs.getString(6)));
+location.setPassengers(number);
+location.setId(Integer.parseInt(rs.getString(1)));
+  
+
+locations.add(location);
+	}
+	if(valid)
+	{
+		Cookie cookie=new Cookie("number", ""+number); //creating cookie object
+		response.addCookie(cookie);//adding cookie in response
+		Cookie cookie1=new Cookie("date",date);//creating cookie object
+		response.addCookie(cookie1); //adding cookie in response
+		
+		request.setAttribute("locations", locations); 
+		RequestDispatcher rd=request.getRequestDispatcher("showingPrice.jsp"); //pass data to requested website
+		rd.forward(request, response);
+	} else
+	{ 
+		RequestDispatcher rd=request.getRequestDispatcher("noAvailableFlights.html"); //pass data to requested website
+		rd.forward(request, response);
+		
+	}
+	rs.close();
+	s.close();
+	connection.close();
+	}catch(SQLException e)
+{
+		e.printStackTrace();
+}catch(Exception e)
+{
+	e.printStackTrace();
+}
+
+	
+	
+	}
+
+}
+      

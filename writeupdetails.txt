@@ -1,0 +1,80 @@
+<%@page import="org.simplilearn.workshop.object.Locations , java.util.*" %>
+
+<html>
+<head>
+<style>
+	td,th{
+	 border: 15px;
+	padding-left: 30px;
+	}
+</style>
+</head>
+<body align="center">
+<h2><strong><u>Welcome to FlyWay portal fill up details page</u></strong></h2>
+<% 	Locations location = (Locations)request.getAttribute("location");
+	Cookie cookie[] = request.getCookies();
+	int number = 0;
+	String date="";
+	for(Cookie temp : cookie){
+		if(temp.getName().equals("number")){
+			number = Integer.parseInt(temp.getValue());
+		}
+		
+	if(temp.getName().equals("date"))
+	{
+		date=temp.getValue();
+	}
+	
+	} %>
+<div>
+<h3><strong><u> Your requested Flight Details are listed below :-</u></strong> </h3>
+<table>
+	<tr>
+		<th><u>Travel AirLines</u></th>
+		<th><u>Source Location</u></th>
+		<th><u>Destination Location</u></th>
+		<th><u>Date of travel</u></th>
+		<th><u>Number of Passengers</u></th>
+		<th>Your Price</th>
+	</tr>
+	<tr>
+		<td><%=location.getAirlines() %></td>
+		<td><%=location.getSource() %></td>
+		<td><%=location.getDestination() %></td>
+		<td><%=date%></td>
+		<td><%=location.getPassengers() %></td>
+		<td><% String price = ""+(location.getPrice()*number); %><%=price %></td>
+	</tr>
+</table>
+</div>
+<br/><br/>
+<form action="showDetails" method="post">
+	<table align="center">
+		<tr>
+			<th><strong><u>S.No.</u></strong></th>
+			<th><strong><u>First Name</u></strong></th>
+			<th><strong><u>Last Name</u></strong></th>
+			<th><strong><u>Gender</u></strong></th>
+			<th><strong><u>Age</u></strong></th>
+		</tr>
+		<% for(int i=1;i<=number;i++) {%>
+		<tr>
+			<td><%=i %></td>
+			<td><input type="text" name="firstName<%=i %>" required="required"></td>
+			<td><input type="text" name="lastName<%=i %>" required="required"></td>
+			<td><select name="gender<%=i %>" required="required">
+				<option value=""></option>
+				<option value="Male">Male</option>
+				<option value="Female">Female</option>
+				
+			</select></td>
+			<td><input type="number" name="age<%=i %>" min="1" max="70" required="required"></td>
+		</tr>
+		<%} %>
+	</table>
+	Enter your Email address :- <input type="email" name="email" required="required"/><br/>
+	Enter your Mobile Number :- <input type="number" name="mobile" min="6000000001" max="9999999999" maxlength="10" required="required"/>
+	<br/><pre><input type="submit" value="Click here to pay"> <input type="reset" value="reset"></pre>
+</form>
+</body>
+</html>

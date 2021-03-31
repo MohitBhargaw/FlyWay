@@ -1,0 +1,71 @@
+package org.simplilearn.workshop;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.simplilearn.workshop.object.Locations;
+
+@WebServlet("/flights")
+public class FlightsData extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		List<Locations> locations=new ArrayList<Locations>();
+		String sql="SELECT * FROM masterlist";
+		try {  
+			// step 1:load a driver
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			String url = "jdbc:mysql://localhost:3306/teksystem?useSSL=false";
+			String user = "root";
+			String pass = "UP85aw053@";
+
+			// step 2: obtain a connection
+			Connection connection = DriverManager.getConnection(url, user, pass);
+			System.out.println("got connection");
+
+			Statement s = connection.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			
+			while (rs.next()) {
+				Locations location=new Locations();  
+	location.setSource(rs.getString(2));
+	location.setDestination(rs.getString(3));
+	location.setAirlines(rs.getString(6));
+	location.setPrice(rs.getInt(7));
+	location.setFlight(rs.getString(8));
+	locations.add(location);
+			}
+			rs.close(); //closing connections
+			s.close();
+			connection.close();
+			request.setAttribute("locations", locations);
+			RequestDispatcher rd=request.getRequestDispatcher("admin/listFlights.jsp");//pass data to requested website
+			rd.forward(request, response);
+		}catch(SQLException e)//catching exceptions
+		{
+			e.printStackTrace();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
